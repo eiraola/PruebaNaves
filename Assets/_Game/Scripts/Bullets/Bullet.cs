@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
 public class Bullet : MonoBehaviour, IPoolable
 {
-    [SerializeField] private float _speed = 1.0f;
+    
     [SerializeField] private float _lifeTime = 3.0f;
     [SerializeField] private BulletPoolSignalSO _signalSO;
-    private Rigidbody2D _rigidbody;
+    [SerializeField] private Proyectile _proyectile;
+    [SerializeField] private DamageDealer _damageDealer;
     private Coroutine _lifeTimeCoroutine = null;
 
     public void Depool()
@@ -27,28 +27,47 @@ public class Bullet : MonoBehaviour, IPoolable
         gameObject.SetActive(false);
     }
 
-    // Start is called before the first frame update
-    private void Start()
-    {
-        _rigidbody = GetComponent<Rigidbody2D>();
-    }
-
     private void OnEnable()
     {
         _lifeTimeCoroutine = StartCoroutine(CoDestroyByTime());
     }
 
-    void FixedUpdate()
+    public void SetTeam(int team)
     {
-        _rigidbody.velocity = -transform.up * _speed;
+        if (!_damageDealer)
+        {
+            return;
+        }
+
+        _damageDealer.SetTeam(team);
     }
+
+    public void SetDamage(int damage)
+    {
+        if (!_damageDealer)
+        {
+            return;
+        }
+
+        _damageDealer.SetDamage(damage);
+    }
+
+    public void SetSpeed(float speed)
+    {
+        if (!_proyectile)
+        {
+            return;
+        }
+        _proyectile.SetSpeed(speed);
+    }
+
     #region Coroutines
+
     private IEnumerator CoDestroyByTime()
     {
         yield return new WaitForSeconds(_lifeTime);
         _lifeTimeCoroutine = null;
         Pool();
-       
     }
 
     #endregion

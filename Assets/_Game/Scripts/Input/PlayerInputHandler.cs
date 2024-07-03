@@ -1,43 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
 
 public class PlayerInputHandler : MonoBehaviour
 {
+    [SerializeField] private PlayerInputSignalSO playerInputSignalSO;
     [SerializeField] private UnityEvent<float> _onRotate = new UnityEvent<float>();
     [SerializeField] private UnityEvent _onBoost = new UnityEvent();
     [SerializeField] private UnityEvent _onFire = new UnityEvent();
 
-
-    public void OnRotateInput(InputAction.CallbackContext context)
+    private void OnEnable()
     {
-        if (context.performed)
-        {
-            _onRotate?.Invoke(context.ReadValue<float>());
-        }
-
-        if (context.canceled)
-        {
-            _onRotate?.Invoke(context.ReadValue<float>());
-        }
+        playerInputSignalSO.onRotateInputPress += OnRotateInput;
+        playerInputSignalSO.onBoostInputPress += OnBoostInput;
+        playerInputSignalSO.onFireInputPress += OnFireInput;
     }
 
-    public void OnBoostInput(InputAction.CallbackContext context)
+    private void OnDisable()
     {
-        if (context.performed)
-        {
-            _onBoost?.Invoke();
-        }
+        playerInputSignalSO.onRotateInputPress -= OnRotateInput;
+        playerInputSignalSO.onBoostInputPress -= OnBoostInput;
+        playerInputSignalSO.onFireInputPress -= OnFireInput;
     }
 
-    public void OnFireInput(InputAction.CallbackContext context) 
+    public void OnRotateInput(float inputValue)
     {
-        if (context.performed)
-        {
-            _onFire?.Invoke();
-        }
+        _onRotate?.Invoke(inputValue);
+    }
+
+    public void OnBoostInput()
+    {
+        _onBoost?.Invoke();
+    }
+
+    public void OnFireInput() 
+    {
+        _onFire?.Invoke();
     }
 }
