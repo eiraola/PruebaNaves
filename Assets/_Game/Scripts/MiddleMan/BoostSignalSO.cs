@@ -5,14 +5,6 @@ using UnityEngine;
 public class BoostSignalSO : ScriptableObject
 {
     public Action<float> onAccelerationCDValueChanged;
-    private float _boostVelocity = 0.0f;
-
-    public float BoostVelocity { get => _boostVelocity;}
-
-    public void SetBoostValue(float boostValue)
-    {
-        _boostVelocity = boostValue;
-    }
 
     public void AccelrationCDValueChanged(float newValue)
     {

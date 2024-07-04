@@ -6,5 +6,5 @@ public interface IDamageable
 
     public void ZeroLifeReached();
 
-    public int GetTeamID();
+    public ETeam GetTeamID();
 }

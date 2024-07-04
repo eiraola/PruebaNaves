@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2554047384564037872}
   - component: {fileID: 2554047384564037875}
+  - component: {fileID: 1719931509}
   m_Layer: 0
   m_Name: BulletPool
   m_TagString: Untagged
@@ -47,3 +48,16 @@ MonoBehaviour:
   _initialCapacity: 10
   _bulletPrefab: {fileID: 1017051747251527022, guid: 39a6b6caddfab0a46b00af5bc893894c, type: 3}
   _poolSignalSO: {fileID: 11400000, guid: 3135aed222736724aa930a2bafc9b5c5, type: 2}
+--- !u!114 &1719931509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2554047384564037874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecac5daf81cb0564cb7ef4bf9f1137d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _matchStateChanger: {fileID: 11400000, guid: 9b2ec1533cb4b26469a269e577e8cff4, type: 2}

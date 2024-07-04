@@ -9,11 +9,17 @@ public class Bullet : MonoBehaviour, IPoolable
     [SerializeField] private BulletPoolSignalSO _signalSO;
     [SerializeField] private Proyectile _proyectile;
     [SerializeField] private DamageDealer _damageDealer;
+    [SerializeField] private TrailRenderer _trailRenderer;
+    [SerializeField] private Animator _playerOneFireballAnimator;
+    [SerializeField] private Animator _playerTwoFireballAnimator;
     private Coroutine _lifeTimeCoroutine = null;
+    
 
     public void Depool()
     {
-        
+        transform.parent = null;
+        _trailRenderer.enabled = true;
+        _trailRenderer.emitting = true;
     }
 
     public void Pool()
@@ -24,6 +30,8 @@ public class Bullet : MonoBehaviour, IPoolable
             _lifeTimeCoroutine = null;
         }
         _signalSO.Pool(this);
+        _trailRenderer.enabled = false;
+        _trailRenderer.emitting = false;
         gameObject.SetActive(false);
     }
 
@@ -32,13 +40,13 @@ public class Bullet : MonoBehaviour, IPoolable
         _lifeTimeCoroutine = StartCoroutine(CoDestroyByTime());
     }
 
-    public void SetTeam(int team)
+    public void SetTeam(ETeam team)
     {
         if (!_damageDealer)
         {
             return;
         }
-
+        ActivateTeamProyectile(team);
         _damageDealer.SetTeam(team);
     }
 
@@ -61,6 +69,11 @@ public class Bullet : MonoBehaviour, IPoolable
         _proyectile.SetSpeed(speed);
     }
 
+    private void ActivateTeamProyectile(ETeam team)
+    {
+        _playerOneFireballAnimator.gameObject.SetActive(team == ETeam.TeamOne);
+        _playerTwoFireballAnimator.gameObject.SetActive(team == ETeam.TeamTwo);
+    }
     #region Coroutines
 
     private IEnumerator CoDestroyByTime()

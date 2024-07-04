@@ -9,7 +9,7 @@ public class PlayerInputSender : MonoBehaviour
     {
         if (context.performed || context.canceled)
         {
-            _playerInputSignal.onRotateInputPress(context.ReadValue<float>());
+            _playerInputSignal.RotationInputPress(context.ReadValue<float>());
         }
     }
 
@@ -25,7 +25,7 @@ public class PlayerInputSender : MonoBehaviour
     {
         if (context.performed)
         {
-            _playerInputSignal.onFireInputPress();
+            _playerInputSignal.FireInputPress();
         }
     }
 }

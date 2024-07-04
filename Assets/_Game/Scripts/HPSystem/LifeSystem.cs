@@ -1,17 +1,18 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class LifeSystem : MonoBehaviour, IDamageable
+public class LifeSystem : MonoBehaviour, IDamageable, IReseteable
 {
 
     [SerializeField] private int _maxHP = 100;
     [SerializeField] private Team _team;
     [SerializeField] private LifeSystemSignalSO _lifeSystemSignalSO;
+    [SerializeField] private SoundSignalSO _soundSignalSO;
     [SerializeField] private UnityEvent _onZeroHPReached = new UnityEvent();
 
     private float _currentHP = 0;
 
-    public int GetTeamID()
+    public ETeam GetTeamID()
     {
         if (!_team)
         {
@@ -25,9 +26,14 @@ public class LifeSystem : MonoBehaviour, IDamageable
 
     public void RecieveDamage(int damage)
     {
+        if (_currentHP <= 0)
+        {
+            return;
+        }
+
         _currentHP = Mathf.Max(0, _currentHP - damage);
         _lifeSystemSignalSO.LifeChanged(_currentHP / _maxHP);
-
+        PlayDamageSound();
         if (_currentHP <= 0)
         {
             ZeroLifeReached();
@@ -35,14 +41,30 @@ public class LifeSystem : MonoBehaviour, IDamageable
 
     }
 
+    public void Restart()
+    {
+        _currentHP = _maxHP;
+        _lifeSystemSignalSO.LifeChanged(_currentHP / _maxHP);
+    }
+
     public void ZeroLifeReached()
     {
         _onZeroHPReached?.Invoke();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _currentHP = _maxHP;
+        _lifeSystemSignalSO.LifeChanged(_currentHP / _maxHP);
+    }
+
+    private void PlayDamageSound()
+    {
+        if (!_soundSignalSO)
+        {
+            return;
+        }
+
+        _soundSignalSO.PlayClipSound(EClip.Impact);
     }
 }
