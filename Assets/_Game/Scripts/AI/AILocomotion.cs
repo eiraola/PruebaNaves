@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class AILocomotion : AIBehaviourBase
 {
-
-    
     [SerializeField] private ETeam _aiTeam;
     [SerializeField] private float _maxProjectileDetectionDistance = 2.0f;
     [SerializeField] private float _minProjectileDetectionDistance = 1.0f;
@@ -12,6 +10,8 @@ public class AILocomotion : AIBehaviourBase
     private EBehaviourType _behaviourType = EBehaviourType.Passive;
     private Transform _nearestEvadableObject = null;
     private float _dodgeBehaviourPercentaje = 0;
+
+    public EBehaviourType BehaviourType { get => _behaviourType; set => _behaviourType = value; }
 
     private void Update()
     {
@@ -82,7 +82,7 @@ public class AILocomotion : AIBehaviourBase
 
     private float GetDodgePercentage()
     {
-        switch (_behaviourType)
+        switch (BehaviourType)
         {
             case EBehaviourType.Passive:
                 return _dodgeBehaviourPercentaje;

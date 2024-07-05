@@ -3,7 +3,12 @@ using UnityEngine;
 
 public class AIBehaviourSwapper : MonoBehaviour
 {
-    [SerializeField] float _timeBetweenBehaviours = 10f;
+    [SerializeField] private AIBehaviourSwapperSignalSO _aiSignalSO;
+    [SerializeField] private AIBehaviutChangeStatsSO _hardBehaviourStats;
+    [SerializeField] private AIBehaviutChangeStatsSO _easyBehaviourStats;
+    [SerializeField] private AILocomotion _aiLocomotionSystem;
+    [SerializeField] private float _timeBetweenBehaviours = 10f;
+    private AIBehaviutChangeStatsSO _currentBehaviourStats;
     private EBehaviourType _currentBehaviour = EBehaviourType.Passive;
     private Coroutine _swapBehaviourCoroutine = null;
 
@@ -12,6 +17,8 @@ public class AIBehaviourSwapper : MonoBehaviour
     private void OnEnable()
     {
         _swapBehaviourCoroutine = StartCoroutine(CoSwapBehaviour());
+        _aiSignalSO.onEasyModeSet += SetEasyMode;
+        _aiSignalSO.onHardModeSet += SetHardMode;
     }
 
     private void OnDisable()
@@ -21,31 +28,54 @@ public class AIBehaviourSwapper : MonoBehaviour
             StopCoroutine(_swapBehaviourCoroutine);
             _swapBehaviourCoroutine = null;
         }
+        _aiSignalSO.onEasyModeSet -= SetEasyMode;
+        _aiSignalSO.onHardModeSet -= SetHardMode;
     }
+
+    public void SetHardMode()
+    {
+        _currentBehaviourStats = _hardBehaviourStats;
+    }
+
+    public void SetEasyMode()
+    {
+        _currentBehaviourStats = _easyBehaviourStats;
+    }
+
+    private void SelectNextBehaviour()
+    {
+        float maxStatValue = _currentBehaviourStats.PassiveBehaviourPercentaje
+            + _currentBehaviourStats.AgressiveBehaviourPercentaje
+            + _currentBehaviourStats.VeryAgressiveBehaviourPercentaje;
+
+        float changeValue = Random.Range(0.0f, maxStatValue);
+
+        if (changeValue < _currentBehaviourStats.PassiveBehaviourPercentaje)
+        {
+            _currentBehaviour = EBehaviourType.Passive;
+        }
+        else if (changeValue < _currentBehaviourStats.PassiveBehaviourPercentaje + _currentBehaviourStats.AgressiveBehaviourPercentaje)
+        {
+            _currentBehaviour = EBehaviourType.Agressive;
+        }
+        else
+        {
+            _currentBehaviour = EBehaviourType.VeryAgressive;
+        }
+    }
+
 
     #region Coroutines
     private IEnumerator CoSwapBehaviour()
     {
         while (true) 
         { 
-            yield return new WaitForSeconds( _timeBetweenBehaviours );
-
-            switch (_currentBehaviour)
-            {
-                case EBehaviourType.Passive:
-                    _currentBehaviour = EBehaviourType.Agressive;
-                    break;
-                case EBehaviourType.Agressive:
-                    _currentBehaviour = EBehaviourType.VeryAgressive;
-                    break;
-                case EBehaviourType.VeryAgressive:
-                    _currentBehaviour = EBehaviourType.VeryAgressive;
-                    break;
-                default:
-                    _currentBehaviour = EBehaviourType.Agressive;
-                    break;
-            }
+            yield return new WaitForSeconds(_timeBetweenBehaviours);
+            SelectNextBehaviour();
+            _aiLocomotionSystem.BehaviourType = _currentBehaviour;
         }
     }
+
+
     #endregion
 }

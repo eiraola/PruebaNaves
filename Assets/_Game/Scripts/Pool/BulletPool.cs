@@ -11,9 +11,12 @@ public class BulletPool : MonoBehaviour, IStopable
 
     void Start()
     {
+        Bullet bulletPrefab;
         for (int i = 0; i < _initialCapacity; i++)
         {
-            _bullets.Enqueue(Instantiate(_bulletPrefab));
+            bulletPrefab = Instantiate(_bulletPrefab, transform.position, Quaternion.identity);
+            bulletPrefab.gameObject.SetActive(false);
+            _bullets.Enqueue(bulletPrefab);
         }
 
         _poolSignalSO.bulletPool = this;

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class ShipMovement : MonoBehaviour, IStopable, IInitializable
+public class ShipMovement : MonoBehaviour, IStopable, IInitializable, IReseteable
 {
     [SerializeField] private Transform _targetGO;
     [SerializeField] private float _speed = 1.0f;
@@ -80,5 +80,10 @@ public class ShipMovement : MonoBehaviour, IStopable, IInitializable
     public void Initialize()
     {
         _isStopped = false;
+    }
+
+    public void Restart()
+    {
+        _targetGO.localRotation = Quaternion.identity;
     }
 }
