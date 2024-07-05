@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BoostSkill : MonoBehaviour, IStopable, IReseteable
 {
@@ -13,6 +14,7 @@ public class BoostSkill : MonoBehaviour, IStopable, IReseteable
     [SerializeField] private float _recoverTime = 1f;
     [SerializeField] private BoostSignalSO _boostSignalSO;
     [SerializeField] private SoundSignalSO _soundSignalSO;
+    [SerializeField] private UnityEvent _onBoostEvent = new UnityEvent();
     private bool _boostAvailable = true;
     private float _currentBoostValue = 0f;
     private Coroutine _boostCoroutine;

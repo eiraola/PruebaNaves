@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour, IPoolable
 {
-    
+    const string ANIM_DISSAPEAR = "Dissapear";
+    const string ANIM_TRAVEL = "Travel";
+
     [SerializeField] private float _lifeTime = 3.0f;
     [SerializeField] private BulletPoolSignalSO _signalSO;
     [SerializeField] private Proyectile _proyectile;
@@ -20,6 +22,8 @@ public class Bullet : MonoBehaviour, IPoolable
         transform.parent = null;
         _trailRenderer.enabled = true;
         _trailRenderer.emitting = true;
+        _playerOneFireballAnimator.Play(ANIM_TRAVEL);
+        _playerTwoFireballAnimator.Play(ANIM_TRAVEL);
     }
 
     public void Pool()
@@ -29,6 +33,7 @@ public class Bullet : MonoBehaviour, IPoolable
             StopCoroutine(_lifeTimeCoroutine);
             _lifeTimeCoroutine = null;
         }
+        
         _signalSO.Pool(this);
         _trailRenderer.enabled = false;
         _trailRenderer.emitting = false;
@@ -67,6 +72,12 @@ public class Bullet : MonoBehaviour, IPoolable
             return;
         }
         _proyectile.SetSpeed(speed);
+    }
+
+    public void PlayAnimDissapear()
+    {
+        _playerOneFireballAnimator.Play(ANIM_DISSAPEAR);
+        _playerTwoFireballAnimator.Play(ANIM_DISSAPEAR);
     }
 
     private void ActivateTeamProyectile(ETeam team)
